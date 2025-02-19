@@ -30,7 +30,7 @@ void vehicleToll(int numvehicles,char vehicle[]){
         bus_charge=bus_charge+80.0f;
         break;
       }
-        printf("total charge:%f%f%f%f",car_charge+truck_charge,bike_charge,bus_charge);
+        printf("total charge:%f,car_charge+truck_charge+bike_charge+bus_charge);
 }
 
 int main(){
