@@ -1,55 +1,72 @@
 #include<stdio.h>
 #include<string.h>
+typedef struct{
+    char orderid[10];
+    char name[200];
+    char product[200];
+    int amount;  
+}customer;
 
-void vehicleToll(int numvehicles,char vehicle[][100]){
-      float total_charge=0.0f,car_charge=0.0f,truck_charge=0.0f,bike_charge=0.0f,bus_charge=0.0f;
-      for(int i=0;i<numvehicles;i++){
-          int vehicletype=-1;
-      if(strcmp(vehicle[i],"car")==0){
-        vehicletype=1;
-      }
-      else if(strcmp(vehicle[i],"truck")==0){
-        vehicletype=2;
-      }
-      else if(strcmp(vehicle[i],"bike")==0){
-        vehicletype=3;
-      }
-      else if(strcmp(vehicle[i],"bus")==0){
-        vehicletype=4;
-      }
-      
-      switch(vehicletype){
-        case 1:
-        car_charge=car_charge+50.0f;
-        break;
-        case 2:
-        truck_charge=truck_charge+100.0f;
-        break;
-        case 3:
-        bike_charge=bike_charge+20.0f;
-        break;
-        case 4:
-        bus_charge=bus_charge+80.0f;
-        break;
-      }
-      }
-          total_charge=car_charge+truck_charge+bike_charge+bus_charge;
-        printf("total charge:%f",total_charge);
+void adddetails(customer customers[],int n){
+    for(int i=0;i<n;i++){
+        printf("enter the students details(order id,name,product,amount\n");
+        printf("student %d",i+1);
+        scanf("%s %s %s %d",customers[i].orderid,customers[i].name,customers[i].product,&customers[i].amount);
+    }
 }
+
+void savescustomer(customer customers[],int n){
+  FILE* file= fopen("customers.txt","w");
+  if(file==NULL){
+      printf("error creating file\n");
+      return;
+  }
+  for(int i=0;i<n;i++){
+       fprintf(file,"%s %s %s %d ",customers[i].orderid,customers[i].name,customers[i].product,customers[i].amount);
+  }
+  fclose(file);
+}
+
+
+void loadcustomer(customer customers[],int n){
+   FILE* file= fopen("customers.txt","r");
+  if(file==NULL){
+      printf("error creating file\n");
+      return;
+  }
+  for(int i=0;i<n;i++){
+       fscanf(file,"%s %s %s %d",customers[i].orderid,customers[i].name,customers[i].product,&customers[i].amount);
+  }
+  fclose(file);
+}
+     
+void searchsustomerid(customer customers[],int n){
+char search[20];
+int found=0;
+printf("enter the order id to search\n");
+scanf("%s",search);
+
+for(int i=0;i<n;i++){
+if(strcmp(customers[i].orderid,search)==0){
+    found =1;
+    printf("order found :%s %s %s %d",customers[i].orderid,customers[i].name,customers[i].product,customers[i].amount);
+}
+}
+if(!found){
+    printf("no order found\n");
+}
+}
+
+
 int main(){
-      int numvehicles;
-      char vehicle[100][100],i;
+   int n;
+   printf("enter the number of orders\n");
+   scanf("%d",&n);
 
-      printf("enter the number of vehicles\n");
-      scanf("%d",&numvehicles);
-      getchar();
-
-      printf("enter the vehicle type(car/truck/bike)\n");
-      for(i=0;i<numvehicles;i++){
-      scanf("%s",vehicle[i]);
-      }
-     vehicleToll(numvehicles,vehicle);
+    customer customers[n];
+   adddetails(customers,n);
+   searchsustomerid(customers,n);
+   savescustomer(customers,n);
+   loadcustomer(customers,n);
   return 0;
-
 }
-

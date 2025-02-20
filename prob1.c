@@ -1,39 +1,72 @@
 #include<stdio.h>
 #include<string.h>
-void eligibility(int age,int salary,char choice[]){
-    if(age>18 && age<60 )
-        if(strcmp(choice,"no")==0 &&salary>=25000){
-        printf("patient eligible\n ");
+typedef struct{
+    char rollno[10];
+    char name[200];
+    char branch[200];
+    int marks;  
+}student;
+
+void addstudents(student students[],int n){
+    for(int i=0;i<n;i++){
+        printf("enter the students details(roll no,name,course,marks\n");
+        printf("student %d",i+1);
+        scanf("%s %s %s %d",students[i].rollno,students[i].name,students[i].branch,&students[i].marks);
     }
-    else{
-        printf("not eligible\n");
-    }
-    else{
-        printf("not eligible");
-}
 }
 
+void savestudent(student students[],int n){
+  FILE* file= fopen("students.txt","w");
+  if(file==NULL){
+      printf("error creating file\n");
+      return;
+  }
+  for(int i=0;i<n;i++){
+       fprintf(file,"%s %s %s %d ",students[i].rollno,students[i].name,students[i].branch,students[i].marks);
+  }
+  fclose(file);
+}
+
+
+void loadstudent(student students[],int n){
+   FILE* file= fopen("students.txt","r");
+  if(file==NULL){
+      printf("error creating file\n");
+      return;
+  }
+  for(int i=0;i<n;i++){
+       fscanf(file,"%s %s %s %d",students[i].rollno,students[i].name,students[i].branch,&students[i].marks);
+  }
+  fclose(file);
+}
+     
+void searchstudent(student students[],int n){
+char search[20];
+int found=0;
+printf("enter the roll number to search\n");
+scanf("%s",search);
+
+for(int i=0;i<n;i++){
+if(strcmp(students[i].rollno,search)==0){
+    found =1;
+    printf("student data found :%s %s %s %d",students[i].rollno,students[i].name,students[i].branch,students[i].marks);
+}
+}
+if(!found){
+    printf("no record found\n");
+}
+}
 
 
 int main(){
-    int age,salary;
-    char choice[10];
-    printf("enter the age\n");
-    scanf("%d",&age);
-    
-    printf("enter the salary\n");
-    scanf("%d",&salary);
+   int n;
+   printf("enter the number of students\n");
+   scanf("%d",&n);
 
-
-    printf("any preexisting condition{yes/no}");
-    scanf("%s",choice);
-
-    eligibility(age,salary,choice);
-    return 0;
+   student students[n];
+   addstudents(students,n);
+   searchstudent(students,n);
+   savestudent(students,n);
+   loadstudent(students,n);
+  return 0;
 }
-    // if(choice==no){
-    //  int res=
-    // }
-    // else{
-    //     printf("not eligible\n");
-    // }

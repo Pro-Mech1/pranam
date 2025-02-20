@@ -1,45 +1,71 @@
 #include<stdio.h>
-float atmtransaction(int choice,float balance){
-       float amount;
+#include<string.h>
+typedef struct{
+    char cityname[20];
+    char degree[200];
+    char humidity[200];
+}weather;
 
-       switch(choice){
-        case 1:
-        printf("enter the amount to withdraw\n");//withdraw
-        scanf("%f",&amount);
+void adddetails(weather weathers[],int n){
+    for(int i=0;i<n;i++){
+        printf("enter the weather(city name degree humidity\n");
+        printf("city %d",i+1);
+        scanf("%s %s %s",weathers[i].cityname,weathers[i].degree,weathers[i].humidity);
+    }
+}
 
-        if(amount>balance){
-            printf("insufficient balance");
-        }
-        else{
-            balance-=amount;
-            printf("success remaining balance is%f\n",balance);
-        }
-        break;
-        case 2:
-        printf("enter the amount to deposit\n");
-        scanf("%f",&amount);
-        balance+=amount;
-        printf("the total deposit amount is %f\n",balance);
-        break;
-        case 3:
-        printf("current balance is %f",balance);
-        break;
-       }
-       return balance;
+void savesweather(weather weathers[],int n){
+  FILE* file= fopen("weather.txt","w");
+  if(file==NULL){
+      printf("error creating file\n");
+      return;
+  }
+  for(int i=0;i<n;i++){
+       fprintf(file,"%s %s %s",weathers[i].cityname,weathers[i].degree,weathers[i].humidity);
+  }
+  fclose(file);
+}
+
+
+void loadweather(weather weathers[],int n){
+   FILE* file= fopen("weather.txt","r");
+  if(file==NULL){
+      printf("error creating file\n");
+      return;
+  }
+  for(int i=0;i<n;i++){
+       fscanf(file,"%s %s %s",weathers[i].cityname,weathers[i].degree,weathers[i].humidity);
+  }
+  fclose(file);
+}
+     
+void searchcity(weather weathers[],int n){
+char search[20];
+int found=0;
+printf("enter the city name to search\n");
+scanf("%s",search);
+
+for(int i=0;i<n;i++){
+if(strcmp(weathers[i].cityname,search)==0){
+    found =1;
+    printf( "weather in: %s %s humidty %s degree",weathers[i].cityname,weathers[i].degree,weathers[i].humidity);
+}
+}
+if(!found){
+    printf("no order found\n");
+}
 }
 
 
 int main(){
-          float balance=10000.0f;
-          int choice;
+   int n;
+   printf("enter the number of city to search\n");
+   scanf("%d",&n);
 
-        printf("1.withdraw\n");
-        printf("2.deposit\n");
-        printf("3.bankbalance\n");
-
-        printf("enter the choice\n");
-        scanf("%d", &choice);
-
-        balance=atmtransaction(choice,balance);
-    return 0;
+    weather weathers[n];
+   adddetails(weathers,n);
+   searchcity(weathers,n);
+   savesweather(weathers,n);
+   loadweather(weathers,n);
+  return 0;
 }
